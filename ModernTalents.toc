@@ -1,0 +1,18 @@
+## Interface: 30403
+## Author: TheBoringDad
+## Version: 6.81
+## Title: Modern Talents
+## Notes: An addon for guilds
+## SavedVariables: MT_ACCOUNT
+## SavedVariablesPerCharacter: MT_CHARACTER
+## Dependencies: TbdWidgets, Blizzard_TalentUI
+
+Constants.lua
+Callbacks.lua
+Util.lua
+
+Templates.lua
+Templates.xml
+
+ModernTalents.lua
+ModernTalents.xml

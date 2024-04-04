@@ -1,0 +1,322 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+
+    <Frame name="ModernTalents" mixin="ModernTalentsMixin" dontSavePosition="true" parent="UIParent" frameStrata="HIGH" enableMouse="true" movable="true" hidden="true">
+
+        <Size x="1200" y="670"/>
+
+        <Anchors>
+            <Anchor point="CENTER" x="0" y="100"/>
+        </Anchors>
+
+        <Frames>
+            <Button parentKey="close" inherits="UIPanelCloseButton">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-1" y="-1"/>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        HideUIPanel(self:GetParent())
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <Button name="$parentTab1" parentKey="tab1" parentArray="tabs" inherits="PlayerTalentTabTemplate" id="1" > <!--PlayerTalentTabTemplate-->
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="8" y="0"/>
+                </Anchors>
+            </Button>
+            <Button name="$parentTab2" parentKey="tab2" parentArray="tabs" inherits="PlayerTalentTabTemplate" id="2" >
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.tab1" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </Button>
+            <!-- <Button name="$parentTab3" parentKey="tab3" parentArray="tabs" inherits="PlayerTalentTabTemplate" id="3" >
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.tab2" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </Button> -->
+
+            <!-- <Frame parentKey="specGroupParent" parentArray="views" setAllPoints="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="background" atlas="ClassHall_StoneFrame-BackgroundTile" horizTile="true" vertTile="true"/>
+                    </Layer>
+                </Layers>
+            </Frame> -->
+
+            <Frame parentKey="specializationsParent" parentArray="views" setAllPoints="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="background"/>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Frame parentKey="spec1" inherits="ModernTalentsSpecPanel" parentArray="specs">
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                            <Anchor point="BOTTOMLEFT"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="spec2" inherits="ModernTalentsSpecPanel" parentArray="specs">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.spec1" relativePoint="TOPRIGHT"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.spec1" relativePoint="BOTTOMRIGHT"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="spec3" inherits="ModernTalentsSpecPanel" parentArray="specs">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.spec2" relativePoint="TOPRIGHT"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.spec2" relativePoint="BOTTOMRIGHT"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="spec4" inherits="ModernTalentsSpecPanel" parentArray="specs">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.spec3" relativePoint="TOPRIGHT"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.spec3" relativePoint="BOTTOMRIGHT"/>
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+
+            <Frame parentKey="talentTreesParent" setAllPoints="true" parentArray="views" hidden="true">
+
+                <Animations>
+                    <AnimationGroup parentKey="importInfoFadeOut" setToFinalAlpha="true">
+                        <Alpha childKey="importInfo" startDelay="6.0" duration="0.6" fromAlpha="1" toAlpha="0"/>
+                    </AnimationGroup>
+                </Animations>
+
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="background" setAllPoints="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="TOPRIGHT"/>
+                                <Anchor point="BOTTOM" x="0" y="70"/>
+                            </Anchors>
+                        </Texture>
+                        <Texture file="Interface/AddOns/ModernTalents/Media/Talents/Talents.png">
+                            <TexCoords left="0.00048828125" right="0.78759765625" top="0.0009765625" bottom="0.0810546875"/>
+                            <Size y="70"/>
+                            <!-- <Color r="0.172" g="0.170" b="0.174"/> -->
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                    <!-- <Layer level="ARTWORK">
+                        <Texture parentKey="divider" file="Interface/AddOns/ModernTalents/Media/Talents/Specialization.png">
+                            <TexCoords left="0.982421875" right="0.98583984375" top="0.00048828125" bottom="0.41845703125"/>
+                            <Size x="7"/>
+                            <Anchors>
+                                <Anchor point="TOP" x="60" y="0"/>
+                                <Anchor point="BOTTOM" x="60" y="70"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer> -->
+                    <Layer level="OVERLAY">
+                        <FontString parentKey="importInfo" inherits="GameFontNormal">
+                            <Color r="1"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" x="225" y="14"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+
+                <Frames>
+                    <Frame parentKey="helptip" inherits="TBDHelpTipTemplate_NoArrow">
+                        <Size x="480" y="40"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="60" y="-35"/>
+                        </Anchors>
+                    </Frame>
+
+                    <Button parentKey="talentLoadoutDropdown" inherits="TBDDropDownTemplate">
+                        <Size x="180" y="38"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" x="40" y="22"/>
+                        </Anchors>
+                    </Button>
+
+                    <EditBox parentKey="talentImportExport" inherits="TBDInputBoxTemplate">
+                        <Size x="250" y="20"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.talentLoadoutDropdown" relativePoint="RIGHT" x="10" y="0"/>
+                        </Anchors>
+                        <KeyValues>
+                            <KeyValue key="labelText" value="Import/Export"/>
+                        </KeyValues>
+                    </EditBox>
+
+                    <Button parentKey="rebuildTalents" inherits="SecureActionButtonTemplate" text="Re-Build Talents (costs gold)" hidden="true">
+                        <Size x="240" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" x="-370" y="22"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="BACKGROUND">
+                                <Texture>
+                                    <Color r="1" b="1" g="1"/>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                    </Button>
+
+                    <Frame parentKey="spec2" inherits="ModernTalentsCircleButtonTemplate">
+                        <Size x="44" y="44"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" x="-200" y="10"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="spec1" inherits="ModernTalentsCircleButtonTemplate">
+                        <Size x="44" y="44"/>
+                        <Anchors>
+                            <Anchor point="RIGHT" relativeKey="$parent.spec2" relativePoint="LEFT" x="-20" y="0"/>
+                        </Anchors>
+                    </Frame>
+
+                    <Button parentKey="learnTalents" inherits="UIPanelButtonTemplate" text="LEARN">
+                        <Size x="120" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" x="-40" y="36"/>
+                        </Anchors>
+                    </Button>
+
+                    <Frame name="ModernTalentsFrameLearnButtonTutorial" inherits="GlowBoxTemplate" enableMouse="true" hidden="true">
+                        <Size x="220" y="100"/>
+                        <Anchors>
+                            <Anchor point="BOTTOM" relativeKey="$parent.learnTalents" relativePoint="TOP" x="0" y="14"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="OVERLAY">
+                                <FontString name="ModernTalentsFrameLearnButtonTutorialText" inherits="GameFontHighlightLeft" justifyV="TOP" text="TALENT_TREE_PREVIEW_TUTORIAL" >
+                                    <Size x="188" y="0"/>
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="16" y="-24"/>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                        <Frames>
+                            <Button name="ModernTalentsFrameLearnButtonTutorialCloseButton" inherits="UIPanelCloseButton">
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT" x="6" y="6"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnClick>
+                                        ModernTalentsFrameLearnButtonTutorial.hasBeenClosed = true;
+                                        ModernTalentsFrameLearnButtonTutorial:Hide();
+                                    </OnClick>
+                                </Scripts>
+                            </Button>
+                            <Frame name="ModernTalentsFrameLearnButtonTutorialArrow" inherits="GlowBoxArrowTemplate">
+                                <Anchors>
+                                    <Anchor point="TOP" relativePoint="BOTTOM" y="4"/>
+                                </Anchors>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnLoad>
+                                self:SetFrameLevel(self:GetParent():GetFrameLevel()+8);
+                                ModernTalentsFrameLearnButtonTutorialText:SetSpacing(4);
+                            </OnLoad>
+                            <OnShow>
+                                self:SetHeight(ModernTalentsFrameLearnButtonTutorialText:GetHeight()+42);
+                            </OnShow>
+                        </Scripts>
+                    </Frame>
+
+                    <Button parentKey="resetTalents" inherits="UIPanelButtonTemplate" text="RESET">
+                        <Size x="120" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT" x="-40" y="10"/>
+                        </Anchors>
+                    </Button>
+
+
+                    <ScrollFrame name="ModernTalentsPrimaryTree" parentKey="primaryTree" inherits="TBDGridviewTemplate">
+                        <Anchors>
+                            <Anchor point="TOPRIGHT" x="-140" y="-65"/>
+                            <Anchor point="BOTTOMRIGHT" x="-140" y="90"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="OVERLAY">
+                                <FontString parentKey="header" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="BOTTOM">
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="4"/>
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                </FontString>
+
+                                <Texture parentKey="rowLockIcon" file="Interface/AddOns/ModernTalents/Media/Talents/Talents.png">
+                                    <TexCoords left="0.00048828125" right="0.08251953125" top="0.9658203125" bottom="0.9931640625"/>
+                                    <Size x="84" y="14"/>
+                                    <Anchors>
+                                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
+                                    </Anchors>
+                                </Texture>
+
+                                <FontString parentKey="pointsInfo" inherits="GameFontNormalSmall">
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" relativeKey="$parent.rowLockIcon" relativePoint="TOP" x="0" y="4"/>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </ScrollFrame>
+                    <ScrollFrame parentKey="secondaryTree1" inherits="TBDGridviewTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="40" y="-140"/>
+                            <Anchor point="BOTTOMLEFT" x="40" y="90"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="OVERLAY">
+                                <FontString parentKey="header" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="BOTTOM">
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="4"/>
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                    <Size x="280" y="60"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </ScrollFrame>
+                    <ScrollFrame parentKey="secondaryTree2" inherits="TBDGridviewTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.secondaryTree1" relativePoint="TOPRIGHT" x="40" y="0"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.secondaryTree1" relativePoint="BOTTOMRIGHT" x="40" y="0"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="OVERLAY">
+                                <FontString parentKey="header" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="BOTTOM">
+                                    <Anchors>
+                                        <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="4"/>
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                    <Size x="280" y="60"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+        </Frames>
+
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <!-- <OnUpdate method="OnUpdate"/> -->
+            <OnEvent method="OnEvent"/>
+            <OnShow method="OnShow"/>
+            <OnDragStart>
+                self:StartMoving()
+            </OnDragStart>
+            <OnDragStop>
+                self:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+
+    </Frame>
+</Ui>

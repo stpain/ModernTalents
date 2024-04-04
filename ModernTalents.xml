@@ -303,6 +303,14 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
                     </ScrollFrame>
                 </Frames>
             </Frame>
+
+            <Frame parentKey="templates" setAllPoints="true" parentArray="views" hidden="true">
+
+            </Frame>
+            
+            <Frame parentKey="options" setAllPoints="true" parentArray="views" hidden="true">
+
+            </Frame>
         </Frames>
 
         <Scripts>

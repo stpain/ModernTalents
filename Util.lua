@@ -101,7 +101,7 @@ function Util.GetClassData(classID)
             for k, v in ipairs({GetTalentTreeMasterySpells(i)}) do
                 table.insert(specs[i].minorBonuses, v)
             end
-            DevTools_Dump({GetTalentTreeEarlySpells(i)})
+            --DevTools_Dump({GetTalentTreeEarlySpells(i)})
 
         end
 

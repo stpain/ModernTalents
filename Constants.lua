@@ -23,7 +23,44 @@ StaticPopupDialogs['ModernTalentsSaveLoadoutDialog'] = {
     showAlert = 1,
 }
 
+StaticPopupDialogs['ModernTalentsConfirmTalentRecordTalentSpendDialog'] = {
+    text = "%s.",
+    button1 = PREVIEW,
+    button2 = LEARN,
+    button3 = NO,
+    OnAccept = function(self, data)
+        data.accept()
+    end,
+    OnAlt = function(self, data)
+        data.cancel()
+    end,
+    OnCancel = function(self, data)
+        data.alt()
+    end,
+    timeout = 0,
+    --hasEditBox = true,
+    whileDead = true,
+    hideOnEscape = false,
+    preferredIndex = 3,
+    showAlert = 1,
+}
+
 addon.Constants = {}
+
+addon.Constants.Locales = {
+    enUS = {
+        SAVE_TALENTS = "Save Talents",
+        RECORD_TALENTS = "Record Talents",
+        APPLY_TALENT_LOADOUT = "Apply Talent loadout",
+
+        TALENT_RECORDER_START = "Start recording talents",
+        TALENT_RECORDER_RESTART = "Restart recording",
+        TALENT_RECORDER_CONFIRM = "Save talent recording",
+        TALENT_RECORDER_CANCEL = "Cancel",
+
+        RECORD_TALENTS_HELPTIP = "You are currently recording talents, during this time learning talents is disabled."
+    }
+}
 
 addon.Constants.AtlasShortcuts = {
     Padlock = "AdventureMapIcon-Lock",
@@ -401,6 +438,1667 @@ addon.Constants.Atlas = {
 	["interface/talentframe/talentsmasknodecircle"] = {
 		["talents-node-circle-mask"] = { 64, 64, 0, 1, 0, 1, false, false },
 	}
+}
+
+addon.Constants.PetTalents = {
+    [410] = {
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [1]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [2]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [3]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [4]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [5]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [6]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [7]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [8]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [9]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [10]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [11]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [12]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [13]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [14]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [15]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [16]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [17]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [18]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [19]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [20]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [21]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [22]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [23]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [24]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [25]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [26]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [27]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [28]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [29]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [30]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [31]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [32]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [33]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [34]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [35]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [36]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [37]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [38]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [39]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [40]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [41]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [42]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [43]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [44]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [45]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [46]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [47]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [48]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [49]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [50]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [51]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [52]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [53]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [54]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [55]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [56]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [57]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [58]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [59]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [60]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [61]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [62]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [63]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [64]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [65]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [66]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [67]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [68]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [69]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [70]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [71]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [72]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [73]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [74]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [75]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [76]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [77]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [78]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [79]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [80]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [81]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [82]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [83]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [84]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [85]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [86]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [87]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [88]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [89]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [90]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [91]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [92]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [93]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [94]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [95]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [96]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [97]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [98]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [99]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [100]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [101]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [102]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [103]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [104]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [105]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [106]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [107]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [108]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [109]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [110]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [111]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [112]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [113]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [114]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [115]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [116]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 3,
+        }, -- [117]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 4,
+        }, -- [118]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 5,
+        }, -- [119]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 6,
+        }, -- [120]
+        {
+            ["name"] = "Improved Cower",
+            ["talentIndex"] = 7,
+        }, -- [121]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 8,
+        }, -- [122]
+        {
+            ["name"] = "Bloodthirsty",
+            ["talentIndex"] = 9,
+        }, -- [123]
+        {
+            ["name"] = "Spider's Bite",
+            ["talentIndex"] = 10,
+        }, -- [124]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 11,
+        }, -- [125]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 12,
+        }, -- [126]
+        {
+            ["name"] = "Lick Your Wounds",
+            ["talentIndex"] = 13,
+        }, -- [127]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 14,
+        }, -- [128]
+        {
+            ["name"] = "Rabid",
+            ["talentIndex"] = 15,
+        }, -- [129]
+        {
+            ["name"] = "Heart of the Phoenix",
+            ["talentIndex"] = 16,
+        }, -- [130]
+        {
+            ["name"] = "Call of the Wild",
+            ["talentIndex"] = 17,
+        }, -- [131]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [132]
+        {
+            ["name"] = "Shark Attack",
+            ["talentIndex"] = 21,
+        }, -- [133]
+    },
+    [411] = {
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [1]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [2]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [3]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [4]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [5]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [6]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [7]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [8]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [9]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [10]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [11]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [12]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [13]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [14]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [15]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [16]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [17]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [18]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [19]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [20]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [21]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [22]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [23]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [24]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [25]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [26]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [27]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [28]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [29]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [30]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [31]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [32]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [33]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [34]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [35]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [36]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [37]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [38]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [39]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [40]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [41]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [42]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [43]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [44]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [45]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [46]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [47]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [48]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [49]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [50]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [51]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [52]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [53]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [54]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [55]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [56]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [57]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [58]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [59]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [60]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [61]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [62]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [63]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [64]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [65]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [66]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [67]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [68]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [69]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [70]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [71]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [72]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [73]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [74]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [75]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [76]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [77]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [78]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [79]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [80]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [81]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [82]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [83]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [84]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [85]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [86]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [87]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [88]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [89]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [90]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [91]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [92]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [93]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [94]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [95]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [96]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [97]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [98]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [99]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [100]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [101]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [102]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [103]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [104]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [105]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [106]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [107]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [108]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [109]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [110]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [111]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [112]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [113]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [114]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [115]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [116]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [117]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [118]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [119]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [120]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 1,
+        }, -- [121]
+        {
+            ["name"] = "Dash",
+            ["talentIndex"] = 2,
+        }, -- [122]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [123]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [124]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 5,
+        }, -- [125]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 6,
+        }, -- [126]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 7,
+        }, -- [127]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 8,
+        }, -- [128]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [129]
+        {
+            ["name"] = "Bullheaded",
+            ["talentIndex"] = 10,
+        }, -- [130]
+        {
+            ["name"] = "Cornered",
+            ["talentIndex"] = 11,
+        }, -- [131]
+        {
+            ["name"] = "Wolverine Bite",
+            ["talentIndex"] = 12,
+        }, -- [132]
+        {
+            ["name"] = "Owl's Focus",
+            ["talentIndex"] = 13,
+        }, -- [133]
+        {
+            ["name"] = "Feeding Frenzy",
+            ["talentIndex"] = 14,
+        }, -- [134]
+        {
+            ["name"] = "Roar of Recovery",
+            ["talentIndex"] = 15,
+        }, -- [135]
+        {
+            ["name"] = "Carrion Feeder",
+            ["talentIndex"] = 17,
+        }, -- [136]
+        {
+            ["name"] = "Mobility",
+            ["talentIndex"] = 18,
+        }, -- [137]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 20,
+        }, -- [138]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 21,
+        }, -- [139]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 22,
+        }, -- [140]
+    },
+    [409] = {
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [1]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [2]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [3]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [4]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [5]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [6]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [7]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [8]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [9]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [10]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [11]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [12]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [13]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [14]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [15]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [16]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [17]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [18]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [19]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [20]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [21]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [22]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [23]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [24]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [25]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [26]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [27]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [28]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [29]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [30]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [31]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [32]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [33]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [34]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [35]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [36]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [37]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [38]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [39]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [40]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [41]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [42]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [43]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [44]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [45]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [46]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [47]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [48]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [49]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [50]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [51]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [52]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [53]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [54]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [55]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [56]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [57]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [58]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [59]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [60]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [61]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [62]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [63]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [64]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [65]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [66]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [67]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [68]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [69]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [70]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [71]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [72]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [73]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [74]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [75]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [76]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [77]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [78]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [79]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [80]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [81]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [82]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [83]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [84]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [85]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [86]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [87]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [88]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [89]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [90]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [91]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [92]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [93]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [94]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [95]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [96]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [97]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [98]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [99]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [100]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [101]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [102]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [103]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [104]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [105]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [106]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [107]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [108]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [109]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [110]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [111]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [112]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [113]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [114]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [115]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [116]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [117]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [118]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [119]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [120]
+        {
+            ["name"] = "Culling the Herd",
+            ["talentIndex"] = 1,
+        }, -- [121]
+        {
+            ["name"] = "Serpent Swiftness",
+            ["talentIndex"] = 2,
+        }, -- [122]
+        {
+            ["name"] = "Great Stamina",
+            ["talentIndex"] = 3,
+        }, -- [123]
+        {
+            ["name"] = "Natural Armor",
+            ["talentIndex"] = 4,
+        }, -- [124]
+        {
+            ["name"] = "Pet Barding",
+            ["talentIndex"] = 5,
+        }, -- [125]
+        {
+            ["name"] = "Guard Dog",
+            ["talentIndex"] = 6,
+        }, -- [126]
+        {
+            ["name"] = "Spiked Collar",
+            ["talentIndex"] = 7,
+        }, -- [127]
+        {
+            ["name"] = "Boar's Speed",
+            ["talentIndex"] = 8,
+        }, -- [128]
+        {
+            ["name"] = "Great Resistance",
+            ["talentIndex"] = 9,
+        }, -- [129]
+        {
+            ["name"] = "Lionhearted",
+            ["talentIndex"] = 10,
+        }, -- [130]
+        {
+            ["name"] = "Grace of the Mantis",
+            ["talentIndex"] = 11,
+        }, -- [131]
+        {
+            ["name"] = "Intervene",
+            ["talentIndex"] = 12,
+        }, -- [132]
+        {
+            ["name"] = "Taunt",
+            ["talentIndex"] = 13,
+        }, -- [133]
+        {
+            ["name"] = "Last Stand",
+            ["talentIndex"] = 14,
+        }, -- [134]
+        {
+            ["name"] = "Roar of Sacrifice",
+            ["talentIndex"] = 15,
+        }, -- [135]
+        {
+            ["name"] = "Blood of the Rhino",
+            ["talentIndex"] = 16,
+        }, -- [136]
+        {
+            ["name"] = "Charge",
+            ["talentIndex"] = 17,
+        }, -- [137]
+        {
+            ["name"] = "Wild Hunt",
+            ["talentIndex"] = 18,
+        }, -- [138]
+        {
+            ["name"] = "Silverback",
+            ["talentIndex"] = 19,
+        }, -- [139]
+        {
+            ["name"] = "Thunderstomp",
+            ["talentIndex"] = 20,
+        }, -- [140]
+    },
 }
 
 addon.Constants.TalentTrees = {

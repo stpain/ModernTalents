@@ -38,6 +38,22 @@
         "TANK",
         "BONUS_TALENTS",
         "AVAILABLE",
-        "NEXT_TALENT_LEVEL"
+        "NEXT_TALENT_LEVEL",
+        "EasyMenu",
+        "UIDropDownMenu_SetWidth",
+        "UIDropDownMenu_Initialize",
+        "UIDropDownMenu_AddButton",
+        "UIDropDownMenu_CreateInfo",
+        "UIDropDownMenu_SetText",
+        "OPTIONS",
+        "GLYPHS",
+        "DISABLE",
+        "NOT_READY",
+        "CANCEL",
+        "CreateDataProvider",
+        "ADDON_DISABLED",
+        "PREVIEW",
+        "LEARN",
+        "StaticPopup1Button1"
     ]
 }

@@ -625,6 +625,9 @@ function ModernTalentsMixin:Init(forceReset)
         self.talentTreesParent.playerSpec:SetSizeRatio(36)
         SetPortraitTexture(self.talentTreesParent.petSpec.icon, "pet")
         SetPortraitTexture(self.talentTreesParent.playerSpec.icon, "player")
+    else
+        self.talentTreesParent.petSpec:Hide()
+        self.talentTreesParent.playerSpec:Hide()
     end
 
     self:SetupOptionsPanel()

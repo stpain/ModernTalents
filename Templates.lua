@@ -208,10 +208,12 @@ end
 
 
 --this is the main call to set the players tree talents
-function ModernTalentsTalentIconMixin:SetTalentIndex(talent)
+function ModernTalentsTalentIconMixin:SetTalentIndex(talent, isPet)
     self.tabIndex, self.talentIndex = talent.tabIndex, talent.talentIndex
 
-    local name, icon, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(self.tabIndex, self.talentIndex)
+    self.isPet = isPet;
+
+    local name, icon, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(self.tabIndex, self.talentIndex, false, self.isPet)
     self.isPassive = IsPassiveSpell(talent.talentSpellIDs[1])
 
     if not self.isPassive then
@@ -240,26 +242,31 @@ function ModernTalentsTalentIconMixin:SetTalentIndex(talent)
         end
     end)
     self.UpdateTooltip = function()
-        local activeTalentGroup = GetActiveTalentGroup(false, false)
-        GameTooltip:SetTalent(self.tabIndex, self.talentIndex, false, false, activeTalentGroup, true)
+        local activeTalentGroup = GetActiveTalentGroup(false, self.isPet)
+        GameTooltip:SetTalent(self.tabIndex, self.talentIndex, false, self.isPet, activeTalentGroup, true)
     end
     self:SetScript("OnMouseDown", function(_, button)
 
-        local activeTalentGroup = GetActiveTalentGroup(false, false)
+        --print(name)
 
+        local activeTalentGroup = GetActiveTalentGroup(false, self.isPet)
+
+
+        --this is for talent recording 
         addon.CallbackRegistry:TriggerEvent(addon.Callbacks.Talent_OnMouseDown, name, talent)
 
         --if not self.isRecordingActive then
 
             if ( button == "LeftButton" ) then
                 if ( GetCVarBool("previewTalentsOption") ) then
-                    AddPreviewTalentPoints(self.tabIndex, self.talentIndex, 1, false, activeTalentGroup);
+                    --print("boo", self.tabIndex, self.talentIndex)
+                    AddPreviewTalentPoints(self.tabIndex, self.talentIndex, 1, self.isPet, activeTalentGroup);
                 else
                     --LearnTalent(info.tabIndex, info.talentIndex, false, false);
                 end
             elseif ( button == "RightButton" ) then
                 if ( GetCVarBool("previewTalentsOption") ) then
-                    AddPreviewTalentPoints(self.tabIndex, self.talentIndex, -1, false, activeTalentGroup);
+                    AddPreviewTalentPoints(self.tabIndex, self.talentIndex, -1, self.isPet, activeTalentGroup);
                 end
             end
 
@@ -330,9 +337,12 @@ end
 
 function ModernTalentsTalentIconMixin:Update()
     if self.tabIndex and self.talentIndex then
-        local name, iconTexture, row, col, rank, maxRank, isExceptional, available, unKnown, isActive, y, talentID = GetTalentInfo(self.tabIndex, self.talentIndex)
+
+        --print("talent update")
+
+        local name, iconTexture, row, col, rank, maxRank, isExceptional, available, unKnown, isActive, y, talentID = GetTalentInfo(self.tabIndex, self.talentIndex, false, self.isPet)
         local activeTalentGroup = GetActiveTalentGroup(false, false)
-        local tier, column, isLearnable = GetTalentPrereqs(self.tabIndex, self.talentIndex, false, false, activeTalentGroup)
+        --local tier, column, isLearnable = GetTalentPrereqs(self.tabIndex, self.talentIndex, false, false, activeTalentGroup)
 
         if name == "Ancestral Awakening" or name == "Mana Tide Totem" then
             --print(name, tier, column, isLearnable)

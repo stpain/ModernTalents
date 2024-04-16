@@ -124,8 +124,9 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
                     <Layer level="OVERLAY">
                         <FontString parentKey="importInfo" inherits="GameFontNormalLarge">
                             <Color r="1"/>
+                            <Size x="300" y="50"/>
                             <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" x="-70" y="30"/>
+                                <Anchor point="TOPLEFT" relativePoint="BOTTOM" x="-70" y="70"/>
                             </Anchors>
                         </FontString>
                     </Layer>
@@ -397,6 +398,79 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
                             </Layer>
                         </Layers>
                     </ScrollFrame>
+
+
+                    <Frame parentKey="petTalentParent" hidden="true">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="0" y="0"/>
+                            <Anchor point="BOTTOMRIGHT" x="-133" y="70"/>
+                        </Anchors>
+
+                        <Layers>
+                            <Layer>
+                                <FontString parentKey="petName" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="BOTTOM">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="80" y="-100"/>
+                                    </Anchors>
+                                    <Color r="1" g="1" b="1"/>
+                                    <Size x="440" y="30"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+
+                        <Frames>
+
+                            <PlayerModel name="FooBarModelScene" parentKey="model" inherits="PanningModelSceneMixinTemplate" enableMouse="true">
+                                <Size x="440"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="80" y="-140"/>
+                                    <Anchor point="BOTTOMLEFT" x="80" y="140"/>
+                                </Anchors>
+                                <!-- <Frames>
+                                    <Frame parentKey="ControlFrame" inherits="ModelSceneControlFrameTemplate" enableMouse="true">
+                                        <Anchors>
+                                            <Anchor point="TOP" x="0" y="-10"/>
+                                        </Anchors>
+                                    </Frame>
+                                </Frames> -->
+                            </PlayerModel>
+                            
+                            <ScrollFrame parentKey="talentTree" inherits="TBDGridviewTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT" x="0" y="-68"/>
+                                    <Anchor point="BOTTOMRIGHT" x="0" y="70"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="OVERLAY">
+                                        <FontString parentKey="header" inherits="GameFontNormalHuge" justifyH="CENTER" justifyV="BOTTOM">
+                                            <Anchors>
+                                                <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="4"/>
+                                            </Anchors>
+                                            <Color r="1" g="1" b="1"/>
+                                        </FontString>
+        
+                                        <Texture parentKey="rowLockIcon" file="Interface/AddOns/ModernTalents/Media/Talents/Talents.png">
+                                            <TexCoords left="0.00048828125" right="0.08251953125" top="0.9658203125" bottom="0.9931640625"/>
+                                            <Size x="84" y="14"/>
+                                            <Anchors>
+                                                <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" x="0" y="0"/>
+                                            </Anchors>
+                                        </Texture>
+        
+                                        <FontString parentKey="pointsInfo" inherits="GameFontNormalSmall">
+                                            <Anchors>
+                                                <Anchor point="BOTTOM" relativeKey="$parent.rowLockIcon" relativePoint="TOP" x="0" y="4"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                            </ScrollFrame>
+                        </Frames>
+                    </Frame>
+
+
+
+
                 </Frames>
             </Frame>
 

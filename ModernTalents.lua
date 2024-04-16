@@ -32,12 +32,15 @@ function ModernTalentsMixin:OnLoad()
     self:RegisterForDrag("LeftButton")
 
     self:RegisterEvent("PREVIEW_TALENT_POINTS_CHANGED")
+    self:RegisterEvent("PREVIEW_PET_TALENT_POINTS_CHANGED")
     self:RegisterEvent("PLAYER_TALENT_UPDATE")
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     self:RegisterEvent("CONFIRM_TALENT_WIPE")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
+    self:RegisterEvent("PLAYER_LEVEL_UP") --level, healthDelta, powerDelta, numNewTalents, numNewPvpTalentSlots, strengthDelta, agilityDelta, staminaDelta, intellectDelta
    
     NineSliceUtil.ApplyLayout(self, addon.Constants.NineSliceLayouts.ParentBorder)
+    --NineSliceUtil.ApplyLayout(self.talentTreesParent.petTalentParent, addon.Constants.NineSliceLayouts.ParentBorder)
 
     self.specializationsParent.background:SetTexture("Interface/AddOns/ModernTalents/Media/Talents/Specialization.png")
 
@@ -129,8 +132,9 @@ function ModernTalentsMixin:OnLoad()
     end)
     self.talentTreesParent.resetTalents:SetScript("OnClick", function()
         PlayerTalentFrameResetButton_OnClick()
-        self:UpdateSpecializationTab(true)
+        self:UpdateSpecializationTab()
         self:UpdateTalentTrees()
+        self:UpdatePetTalentTree()
     end)
 
     self.talentTreesParent.learnTalents:SetScript("OnEnter", function()
@@ -195,6 +199,51 @@ function ModernTalentsMixin:Talent_OnTalentRecordSelectionChanged(record)
     self:OptionsPanel_OnTalentRecordSettingChanged()
 end
 
+--[[
+    for a talent record to be applied the current talent point spending needs to be checked and
+    match the talent record
+    the important part is that the talents in the record upto the current point spent amount matches
+]]
+function ModernTalentsMixin:CheckTalentRecordCompatability(record, isPet)
+    
+    local numTalentPoints = GetNumTalentPoints()
+    local activeTalentGroup = GetActiveTalentGroup(false, isPet)
+    local unspentPoints = GetUnspentTalentPoints(false, isPet, activeTalentGroup)
+    local pointsMatch = true;
+    local spentPoints = numTalentPoints - unspentPoints;
+    --print(spentPoints)
+    if spentPoints > 0 then
+
+        local currentTalents = {}
+        for i = 1, spentPoints do
+            local talent = record.record[i]
+            if talent then
+                local name, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(talent.tabIndex, talent.talentIndex, false, isPet)
+                --print(name, rank)
+                if not currentTalents[name] then
+                    currentTalents[name] = {
+                        actual = rank,
+                        record = 1,
+                    }
+                else
+                    currentTalents[name].record = currentTalents[name].record + 1;
+                end
+            end
+        end
+
+
+        --[[
+            check if the current talent point spend matches the talent record
+        ]]
+        for k, v in pairs(currentTalents) do
+            if v.actual ~= v.record then
+                pointsMatch = false;
+            end
+        end
+    end
+    return pointsMatch, spentPoints, unspentPoints;
+end
+
 
 --[[
     this is quite the function, the idea is to test if a talent record can eb applied with the players current talent point spend
@@ -224,47 +273,7 @@ function ModernTalentsMixin:OptionsPanel_OnTalentRecordSettingChanged()
             end
             panel.autoLearnTalentRecording.recordListview.scrollView:SetDataProvider(CreateDataProvider(t))
 
-            --[[
-                for a talent record to be applied the current talent point spending needs to be checked and
-                match the talent record
-                the important part is that the talents in the record upto the current point spent amount matches
-            ]]
-            local numTalentPoints = GetNumTalentPoints()
-            local activeTalentGroup = GetActiveTalentGroup(false, false)
-            local unspentPoints = GetUnspentTalentPoints(false, false, activeTalentGroup)
-            local pointsMatch = true;
-            local spentPoints = numTalentPoints - unspentPoints;
-            --print(spentPoints)
-            if spentPoints > 0 then
-
-                local currentTalents = {}
-                for i = 1, spentPoints do
-                    local talent = record.record[i]
-                    if talent then
-                        local name, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(talent.tabIndex, talent.talentIndex)
-                        --print(name, rank)
-                        if not currentTalents[name] then
-                            currentTalents[name] = {
-                                actual = rank,
-                                record = 1,
-                            }
-                        else
-                            currentTalents[name].record = currentTalents[name].record + 1;
-                        end
-                    end
-                end
-
-
-                --[[
-                    check if the current talent point spend matches the talent record
-                ]]
-                for k, v in pairs(currentTalents) do
-                    if v.actual ~= v.record then
-                        panel.autoLearnTalentRecording.active.label:SetText(string.format("Unable to apply %s as %s doesn't match", record.name, k))
-                        pointsMatch = false;
-                    end
-                end
-            end
+            local pointsMatch, spentPoints, unspentPoints = self:CheckTalentRecordCompatability(record, false)
             
             if (unspentPoints > 0) and (spentPoints < #record.record) then
                 if pointsMatch then
@@ -383,7 +392,9 @@ function ModernTalentsMixin:SetupOptionsPanel()
             -- }
         }
         for k, v in ipairs(self.db.account.talentRecordings) do
-            if v.class == select(3, UnitClass("player")) then
+
+            --at the moment dont allow pet recordings
+            if not v.isPet and v.class == select(3, UnitClass("player")) then
                 table.insert(t, {
                     text = v.name,
                     func = function()
@@ -473,16 +484,19 @@ function ModernTalentsMixin:SetupTalentRecorder()
         StaticPopup_Show("ModernTalentsSaveLoadoutDialog", "Name", nil, {
             callback = function(n)
                 local _, _, class = UnitClass("player")
+                local isPet = self.talentTreesParent.petTalentParent:IsVisible() and true or false
                 table.insert(self.db.account.talentRecordings, {
                     name = n,
                     class = class,
-                    record = self.talentRecord
+                    record = self.talentRecord,
+                    isPet = isPet,
                 })
                 addon.CallbackRegistry:TriggerEvent(addon.Callbacks.Talent_OnTalentRecording, false)
                 self:IterAllTalentFrames(function(f)
                     f.Update(f)
                 end)
                 panel.recordingAnim:Stop()
+                panel:Hide()
                 self.talentRecord = nil
                 self.talentTreesParent.learnTalents:Enable()
                 PlayerTalentFrameLearnButton:Enable()
@@ -532,6 +546,7 @@ function ModernTalentsMixin:OnShow()
     self:InitializeTalentTabDropdown()
     self:UpdateSpecializationTab()
     self:UpdateTalentTrees()
+    self:UpdatePetTalentTree()
 end
 
 function ModernTalentsMixin:SetView(tabID)
@@ -542,10 +557,65 @@ function ModernTalentsMixin:SetView(tabID)
     PanelTemplates_SetTab(self, tabID);
 end
 
+function ModernTalentsMixin:ToggleHunterPetTalents(showPet)
+    
+    if showPet then
+        self.talentTreesParent.primaryTree:Hide()
+        self.talentTreesParent.secondaryTree1:Hide()
+        self.talentTreesParent.secondaryTree2:Hide()
+        self.talentTreesParent.helptip:Hide()
+
+        self.talentTreesParent.petTalentParent:Show()
+
+
+        PlayerTalentFrameTab2:Click()
+
+    else
+        self.talentTreesParent.primaryTree:Show()
+        self.talentTreesParent.secondaryTree1:Show()
+        self.talentTreesParent.secondaryTree2:Show()
+        self.talentTreesParent.helptip:Show()
+
+        self.talentTreesParent.petTalentParent:Hide()
+
+        PlayerTalentFrameTab1:Click()
+
+    end
+end
+
 function ModernTalentsMixin:OnEvent(event, ...)
     if self[event] then
         self[event](self, ...)
     end
+end
+
+function ModernTalentsMixin:PLAYER_LEVEL_UP(...)
+
+    local level, healthDelta, powerDelta, numNewTalents, numNewPvpTalentSlots, strengthDelta, agilityDelta, staminaDelta, intellectDelta = ...;
+
+    if numNewTalents > 0 then
+        if self.db.account.profiles[addon.thisCharacter].hasActiveTalentRecording then
+            
+            local record = self.db.account.profiles[addon.thisCharacter].currentTalentRecording;
+
+            local pointsMatch, spentPoints, unspentPoints = self:CheckTalentRecordCompatability(record, false)
+
+            if (unspentPoints > 0) and (spentPoints < #record.record) then
+                if pointsMatch then
+                    local nextTalent = record.record[spentPoints + 1]
+                    local nextTalentName, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(nextTalent.tabIndex, nextTalent.talentIndex)
+                    
+                    local activeTalentGroup = GetActiveTalentGroup(false, false)
+                    LearnTalent(nextTalent.tabIndex, nextTalent.talentIndex, false, false);
+                end
+            end
+
+        end
+    end
+end
+
+function ModernTalentsMixin:ApplyNextTalentRecording()
+    
 end
 
 function ModernTalentsMixin:PLAYER_ENTERING_WORLD(...)
@@ -559,6 +629,7 @@ function ModernTalentsMixin:ACTIVE_TALENT_GROUP_CHANGED(...)
         f.Update(f)
     end)
     self:UpdateTalentTrees()
+    self:UpdatePetTalentTree()
     self:UpdateSpecializationTab(true)
 end
 
@@ -568,6 +639,17 @@ function ModernTalentsMixin:PLAYER_TALENT_UPDATE(...)
     end)
     self:UpdateTalentTrees()
     self:UpdateSpecializationTab()
+end
+
+function ModernTalentsMixin:PREVIEW_PET_TALENT_POINTS_CHANGED(...)
+
+    local talentIndex, tabID, activeTalentGroup, delta = ...;
+
+    --print(talentIndex, tabID, delta)
+
+    addon.CallbackRegistry:TriggerEvent(addon.Callbacks.Talent_OnPreviewPointsChanged, talentIndex, tabID, delta)
+
+    self:UpdatePetTalentTree()
 end
 
 function ModernTalentsMixin:PREVIEW_TALENT_POINTS_CHANGED(...)
@@ -625,12 +707,138 @@ function ModernTalentsMixin:Init(forceReset)
         self.talentTreesParent.playerSpec:SetSizeRatio(36)
         SetPortraitTexture(self.talentTreesParent.petSpec.icon, "pet")
         SetPortraitTexture(self.talentTreesParent.playerSpec.icon, "player")
+
+        self.talentTreesParent.petSpec:SetScript("OnMouseDown", function()
+            self:ToggleHunterPetTalents(true)
+        end)
+        self.talentTreesParent.playerSpec:SetScript("OnMouseDown", function()
+            self:ToggleHunterPetTalents()
+        end)
+
+        self.talentTreesParent.petTalentParent.talentTree:SetWidth(300)
+        self.talentTreesParent.petTalentParent.talentTree:InitFramePool("Frame", "ModernTalentsTalentIconTemplate")
+        self.talentTreesParent.petTalentParent.talentTree:SetFixedColumnCount(4)
+        self.talentTreesParent.petTalentParent.talentTree.ScrollBar:Hide()
+        self.talentTreesParent.petTalentParent.talentTree.ScrollBar:HookScript("OnShow", function()
+            self.talentTreesParent.petTalentParent.talentTree.ScrollBar:Hide()
+        end)
+
+        C_Timer.After(0.1, function()
+            for row = 1, 7 do
+                for col = 1, 4 do
+                    self.talentTreesParent.petTalentParent.talentTree:Insert({
+                        rowId = row,
+                        colId = col,
+                    })
+                end
+            end
+        end)
+
+        self.talentTreesParent.petTalentParent:SetScript("OnShow", function()
+            self:BuildPetTalentTree()
+            self.talentTreesParent.petTalentParent.model:SetUnit("pet")
+        end)
+
+        -- self.talentTreesParent.petTalentParent.model.ControlFrame.OnLoad(self.talentTreesParent.petTalentParent.model.ControlFrame)
+        --self.talentTreesParent.petTalentParent.model.ControlFrame:SetModelScene(self.talentTreesParent.petTalentParent.model);
+
+        --DevTools_Dump({self.talentTreesParent.petTalentParent.model.ControlFrame.zoomOutButton})
+
+        --self.talentTreesParent.petTalentParent.model.petSlotID = 0
+        --self.talentTreesParent.petTalentParent.model:SetCameraOrientationByYawPitchRoll(1.57, 1.57, 3.14)
+        self.talentTreesParent.petTalentParent.model:HookScript("OnMouseDown", function(model, button)
+            if button == "LeftButton" then
+                model.rotating = true
+                model.rotateStartCursorX = GetCursorPosition()
+
+            else
+
+                -- local PET_STABLE_MODEL_SCENE_ID = 718;
+                -- model.petSlotID = model.petSlotID + 1;
+                -- if model.petSlotID > 5 then
+                --     model.petSlotID = 0;
+                -- end
+
+                --local forceSceneChange = true;
+                --model:TransitionToModelSceneID(PET_STABLE_MODEL_SCENE_ID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, forceSceneChange);
+                --local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(model.petSlotID);
+
+                -- if creatureDisplayID then
+
+                --     local actor = model:GetActorAtIndex(1);
+                --     if actor then
+                --         actor:SetModelByCreatureDisplayID(creatureDisplayID);
+                --     else
+                --         local actor = model:CreateActor()
+                --         actor:SetModelByCreatureDisplayID(creatureDisplayID);
+
+                --         -- these args don't match the wiki
+                --         --zoom + moves actor away, x + moves actor left, y + moves actor up
+                --         actor:SetPosition(6, 0, -0.5)
+                --         actor:SetPitch(3.14) --this is a forward roll
+                --         actor:SetRoll(3.14) --this is a barrel roll
+                --         actor:SetYaw(1.57) --this rotates
+
+                --     end
+                -- end
+
+                --model:TransitionToModelSceneID(PET_STABLE_MODEL_SCENE_ID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, forceSceneChange);
+            end
+        end)
+    
+        self.talentTreesParent.petTalentParent.model:HookScript("OnMouseUp", function(model, button)
+            if button == "LeftButton" then
+                model.rotating = false
+            end
+        end)
+    
+        self.talentTreesParent.petTalentParent.model:HookScript("OnUpdate", function(model)
+            if ( model.rotating ) then
+                local x = GetCursorPosition();
+                local diff = (x - model.rotateStartCursorX) * MODELFRAME_DRAG_ROTATION_CONSTANT;
+                model.rotateStartCursorX = GetCursorPosition();
+                model.yaw = (model.yaw or 1) + diff;
+                -- model.pitch = (model.pitch or 1) + diff;
+                -- model.roll = (model.roll or 1) + diff;
+                if ( model.yaw < 0 ) then
+                    model.yaw = model.yaw + (2 * PI);
+                end
+                if ( model.yaw > (2 * PI) ) then
+                    model.yaw = model.yaw - (2 * PI);
+                end
+                -- if ( model.roll < 0 ) then
+                --     model.roll = model.roll + (2 * PI);
+                -- end
+                -- if ( model.roll > (2 * PI) ) then
+                --     model.roll = model.roll - (2 * PI);
+                -- end
+                -- if ( model.pitch < 0 ) then
+                --     model.pitch = model.pitch + (2 * PI);
+                -- end
+                -- if ( model.pitch > (2 * PI) ) then
+                --     model.pitch = model.pitch - (2 * PI);
+                -- end
+                model:SetRotation(model.yaw, false);
+                --model:SetCameraOrientationByYawPitchRoll(model.yaw, 0,0)
+                -- local actor = model:GetActorAtIndex(1);
+                -- if actor then
+                --     actor:SetYaw(model.yaw, false);
+                -- end
+            end
+        end)
+
+
+
+        self.talentTreesParent.petTalentParent.model:SetUnit("pet")
+
     else
         self.talentTreesParent.petSpec:Hide()
         self.talentTreesParent.playerSpec:Hide()
     end
 
     self:SetupOptionsPanel()
+
+    --self:CreateClassData()
 
 end
 
@@ -1121,6 +1329,73 @@ function ModernTalentsMixin:Specialization_OnSelected(info)
     end
 
     self:UpdateTalentTrees()
+    self:UpdatePetTalentTree()
+end
+
+
+
+function ModernTalentsMixin:UpdatePetTalentTree()
+
+    --this needs to go elsewhere really
+    if UnitName("pet") then
+        self.talentTreesParent.petTalentParent.petName:SetText(string.format("%s %s %s", UnitName("pet"), LEVEL, UnitLevel("pet")))
+    end
+    
+    local activeTalentGroup = GetActiveTalentGroup(false, true)
+
+    local tree = self.talentTreesParent.petTalentParent.talentTree
+
+    local id, name, description, icon, pointsSpent, background, previewPointsSpent, isUnlocked = GetTalentTabInfo(1, false, true, activeTalentGroup)
+
+    if not name then
+        return
+    end
+
+    local points = ( GetCVarBool("previewTalentsOption") == true ) and (pointsSpent + previewPointsSpent) or pointsSpent
+
+    if isUnlocked then
+        tree.header:SetText(string.format("%s\n%d %s", name, points, "Points spent"):upper())
+    else
+        tree.header:SetText(string.format("%s %s", name, CreateAtlasMarkup(addon.Constants.AtlasShortcuts.Padlock, 20, 24, 0, -18)))
+    end
+
+    local lastRowOpen = math.ceil(points / 5)
+
+    if points % 5 == 0 then
+        lastRowOpen = lastRowOpen + 1;
+    end
+
+    local unlockOffset = math.ceil(points / 5)
+    if unlockOffset > 7 then
+        unlockOffset = 7
+    end
+    if points % 5 == 0 then
+        unlockOffset = unlockOffset + 1;
+    end
+    local rowHeight = tree:GetHeight() / 6
+
+    tree.rowLockIcon:ClearAllPoints()
+    tree.rowLockIcon:SetPoint("BOTTOMRIGHT", tree, "TOPLEFT", 0, (unlockOffset * -rowHeight))
+
+    if unlockOffset < 7 then
+        local spendText = "Spend %d\nto unlock"
+        tree.pointsInfo:SetText(string.format(spendText, (unlockOffset * 5) - points))
+
+        tree.rowLockIcon:Show()
+        tree.pointsInfo:Show()
+
+    else
+        tree.rowLockIcon:Hide()
+        tree.pointsInfo:Hide()
+    end
+
+    for _, frame in ipairs(tree:GetFrames()) do
+        if (frame.rowId <= lastRowOpen) and frame.talentIndex then
+            frame.icon:SetDesaturation(0)
+        else
+            frame.icon:SetDesaturation(1)
+        end
+    end
 end
 
 
@@ -1395,8 +1670,25 @@ end
 
 
 
-function ModernTalentsMixin:BuildPetTalentTree(tabID)
-    --addon.Constants.PetTalents
+function ModernTalentsMixin:BuildPetTalentTree()
+
+    local activeTalentGroup = GetActiveTalentGroup(false, true)
+
+    local specID, name, description, icon, pointsSpent, background, previewPointsSpent, isUnlocked = GetTalentTabInfo(1, false, true, activeTalentGroup);
+
+    for k, frame in ipairs(self.talentTreesParent.petTalentParent.talentTree:GetFrames()) do
+        frame:ClearTalent()
+
+        local row, col = frame.rowId, frame.colId
+        row = tostring(row)
+        col = tostring(col)
+
+        if addon.Constants.PetTalents and addon.Constants.PetTalents[specID] and addon.Constants.PetTalents[specID][row] and addon.Constants.PetTalents[specID][row][col] then
+            
+            frame:SetTalentIndex(addon.Constants.PetTalents[specID][row][col], true)
+        end
+
+    end
 end
 
 
@@ -1449,7 +1741,7 @@ end
 
 function ModernTalentsMixin:CreateClassData()
 
-    print("pet stuff")
+    --print("pet stuff")
     if MT_ACCOUNT then
     
         local id, name, description, icon, pointsSpent, background, previewPointsSpent, isUnlocked = GetTalentTabInfo(1, false, true, 1);
@@ -1472,11 +1764,30 @@ function ModernTalentsMixin:CreateClassData()
 
                 local name, icon, row, col, rank, maxRank, isExceptional, available, x, y, z, talentID = GetTalentInfo(1, talentIndex, false, true, 1)
 
+                row = tostring(row)
+                col = tostring(col)
+
+                local spells = {}
+                for k, v in ipairs(addon.rawPetTalentData) do
+                    if v[1] == talentID then
+                        for i = 13, 15 do
+                            if v[i] > 0 then
+                                table.insert(spells, v[i])
+                            end
+                        end
+                    end
+                end
+
                 if name then
-                    table.insert(MT_ACCOUNT.petTalents[id], {
-                        name = name,
+                    if not MT_ACCOUNT.petTalents[id][row] then
+                        MT_ACCOUNT.petTalents[id][row] = {}
+                    end
+
+                    MT_ACCOUNT.petTalents[id][row][col] = {
+                        tabIndex = 1,
                         talentIndex = talentIndex,
-                    })
+                        talentSpellIDs = spells,
+                    }
                 end
 
             end

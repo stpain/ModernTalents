@@ -54,6 +54,17 @@
         "ADDON_DISABLED",
         "PREVIEW",
         "LEARN",
-        "StaticPopup1Button1"
+        "StaticPopup1Button1",
+        "PlayerTalentFrameTab2",
+        "PlayerTalentFrameTab1",
+        "MODELFRAME_DRAG_ROTATION_CONSTANT",
+        "PetStableModelScene",
+        "PetStableFrame",
+        "CAMERA_TRANSITION_TYPE_IMMEDIATE",
+        "CAMERA_MODIFICATION_TYPE_DISCARD",
+        "NUM_PET_ACTIVE_SLOTS",
+        "PetStable_GetPetSlot",
+        "LEVEL",
+        "Add"
     ]
 }

@@ -65,6 +65,8 @@
         "NUM_PET_ACTIVE_SLOTS",
         "PetStable_GetPetSlot",
         "LEVEL",
-        "Add"
+        "Add",
+        "RED_FONT_COLOR",
+        "BLUE_FONT_COLOR"
     ]
 }

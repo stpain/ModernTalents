@@ -47,8 +47,64 @@ StaticPopupDialogs['ModernTalentsConfirmTalentRecordTalentSpendDialog'] = {
 
 addon.Constants = {}
 
+addon.Constants.StarterBuilds = {
+    DRUID = {
+        "https://www.wowhead.com/cata/talent-calc/druid/33230221121212111201-01-020331",
+        "https://www.wowhead.com/cata/talent-calc/druid/-2320322312010221202301-020311", --dps
+        "https://www.wowhead.com/cata/talent-calc/druid/-2302322310310001220311-020331", --tank
+        "https://www.wowhead.com/cata/talent-calc/druid/30232--122301302103223100311",
+    },
+    DEATHKNIGHT = {
+        "https://www.wowhead.com/cata/talent-calc/death-knight/03321200132222311301-32001-003",
+        "https://www.wowhead.com/cata/talent-calc/death-knight/203-20330022233112012301-032",
+        "https://www.wowhead.com/cata/talent-calc/death-knight/2032-1-13300321230231021231",
+    },
+    HUNTER = {
+        "https://www.wowhead.com/cata/talent-calc/hunter/2330230311320112121-2302-012",
+        "https://www.wowhead.com/cata/talent-calc/hunter/032002-2302320032120231221-03",
+        "https://www.wowhead.com/cata/talent-calc/hunter/03-2302-03223003023022121311",
+    },
+    MAGE = {
+        "https://www.wowhead.com/cata/talent-calc/mage/303302021230122212121-23-01",
+        "https://www.wowhead.com/cata/talent-calc/mage/003-230330221120121213231-03",
+        "https://www.wowhead.com/cata/talent-calc/mage/002-2303-2323001013331301221",
+    },
+    PALADIN = {
+        "https://www.wowhead.com/cata/talent-calc/paladin/03331001221131312301-3-032002",
+        "https://www.wowhead.com/cata/talent-calc/paladin/-32023023121121101231-032032",
+        "https://www.wowhead.com/cata/talent-calc/paladin/203002-12-03203213211113002321",
+    },
+    PRIEST = {
+        "https://www.wowhead.com/cata/talent-calc/priest/232210221213200312021-033002",
+        "https://www.wowhead.com/cata/talent-calc/priest/033-233122221210201103211-3",
+        "https://www.wowhead.com/cata/talent-calc/priest/033211--322032210201222100231",
+    },
+    ROGUE = {
+        "https://www.wowhead.com/cata/talent-calc/rogue/0333230013122110321-002-203003",
+        "https://www.wowhead.com/cata/talent-calc/rogue/0322-0332230312030012321-003",
+        "https://www.wowhead.com/cata/talent-calc/rogue/023003-002-0332031321310012321",
+    },
+    SHAMAN = {
+        "https://www.wowhead.com/cata/talent-calc/shaman/3032023212231101321-2-20302",
+        "https://www.wowhead.com/cata/talent-calc/shaman/3022021-2323320013003012321",
+        "https://www.wowhead.com/cata/talent-calc/shaman/3020002-2-23322302132100121301",
+    },
+    WARLOCK = {
+        "https://www.wowhead.com/cata/talent-calc/warlock/223222003013321321-03-33",
+        "https://www.wowhead.com/cata/talent-calc/warlock/003-3312222300310212211-03202",
+        "https://www.wowhead.com/cata/talent-calc/warlock/003-03202-3320202312201312211",
+    },
+    WARRIOR = {
+        "https://www.wowhead.com/cata/talent-calc/warrior/32120303120212312201-0322-3",
+        "https://www.wowhead.com/cata/talent-calc/warrior/320003-03222203130111022321-2",
+        "https://www.wowhead.com/cata/talent-calc/warrior/320001-002-33233201121210212031",
+    },
+}
+
+
 addon.Constants.Locales = {
     enUS = {
+        STARTER_BUILD = "Starter Builds",
         SAVE_TALENTS = "Save Talents",
         RECORD_TALENTS = "Record Talents",
         APPLY_TALENT_LOADOUT = "Apply Talent loadout",
@@ -4914,7 +4970,7 @@ addon.Constants.TalentTrees = {
             {
                 {
                     ["tabIndex"] = 1,
-                    ["talentIndex"] = 21,
+                    ["talentIndex"] = 2,
                     ["talentSpellIDs"] = {
                         11213, -- [1]
                         12574, -- [2]

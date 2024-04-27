@@ -88,7 +88,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 
                 <Animations>
                     <AnimationGroup parentKey="importInfoFadeOut" setToFinalAlpha="true">
-                        <Alpha childKey="importInfo" startDelay="5.0" duration="0.8" fromAlpha="1" toAlpha="0"/>
+                        <Alpha parentKey="alpha" childKey="importInfo" startDelay="5.0" duration="0.8" fromAlpha="1" toAlpha="0"/>
                     </AnimationGroup>
                 </Animations>
 
@@ -123,8 +123,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
                     </Layer> -->
                     <Layer level="OVERLAY">
                         <FontString parentKey="importInfo" inherits="GameFontNormalLarge">
-                            <Color r="1"/>
-                            <Size x="300" y="50"/>
+                            <Size x="300" y="70"/>
                             <Anchors>
                                 <Anchor point="TOPLEFT" relativePoint="BOTTOM" x="-70" y="70"/>
                             </Anchors>
@@ -553,7 +552,7 @@ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
                         <Frames>
                             <CheckButton parentKey="active" inherits="TBDCheckButton">
                                 <Anchors>
-                                    <Anchor point="CENTER" x="0" y="0"/>
+                                    <Anchor point="CENTER" x="-50" y="0"/>
                                 </Anchors>
                             </CheckButton>
                             <Button parentKey="recordingDropdown" inherits="TBDDropDownTemplate">

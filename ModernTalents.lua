@@ -14,16 +14,8 @@ local L = addon.Constants.Locales[GetLocale()]
 
 local NUM_SPECIALIZATIONS = 3
 
---local letters = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
 
 ModernTalentsMixin = {}
-
--- function ModernTalentsMixin:OnUpdate()
--- self.rebuildTalents
---     for k, v in ipairs(letters) do
-        
---     end
--- end
 
 function ModernTalentsMixin:OnLoad()
 
@@ -37,7 +29,7 @@ function ModernTalentsMixin:OnLoad()
     self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     self:RegisterEvent("CONFIRM_TALENT_WIPE")
     self:RegisterEvent("PLAYER_ENTERING_WORLD")
-    self:RegisterEvent("PLAYER_LEVEL_UP") --level, healthDelta, powerDelta, numNewTalents, numNewPvpTalentSlots, strengthDelta, agilityDelta, staminaDelta, intellectDelta
+    self:RegisterEvent("PLAYER_LEVEL_UP")
    
     NineSliceUtil.ApplyLayout(self, addon.Constants.NineSliceLayouts.ParentBorder)
     --NineSliceUtil.ApplyLayout(self.talentTreesParent.petTalentParent, addon.Constants.NineSliceLayouts.ParentBorder)
@@ -151,7 +143,19 @@ function ModernTalentsMixin:OnLoad()
     end)
     self.talentTreesParent.talentImportExport.ok:SetScript("OnMouseDown", function()
         local s = self.talentTreesParent.talentImportExport:GetText()
-        self:ImportTalentString(s)
+        local source, class, talents = self:ImportTalentString(s)
+        if class and talents then
+            StaticPopup_Show("ModernTalentsSaveLoadoutDialog", "Name", nil, {
+                callback = function(name)
+                    table.insert(self.db.account.talentLoadouts, {
+                        name = name,
+                        class = class,
+                        loadout = talents,
+                    })
+                    self:InitializeTalentTabDropdown()
+                end
+            })
+        end
     end)
     self.talentTreesParent.talentImportExport.cancel:SetScript("OnMouseDown", function()
         self.talentTreesParent.talentImportExport:SetText("")
@@ -231,6 +235,7 @@ function ModernTalentsMixin:CheckTalentRecordCompatability(record, isPet)
             end
         end
 
+        --DevTools_Dump(currentTalents)
 
         --[[
             check if the current talent point spend matches the talent record
@@ -274,14 +279,32 @@ function ModernTalentsMixin:OptionsPanel_OnTalentRecordSettingChanged()
             panel.autoLearnTalentRecording.recordListview.scrollView:SetDataProvider(CreateDataProvider(t))
 
             local pointsMatch, spentPoints, unspentPoints = self:CheckTalentRecordCompatability(record, false)
-            
-            if (unspentPoints > 0) and (spentPoints < #record.record) then
+
+
+            --[[
+
+                possible scenario
+
+                player has unspent points and record is a match > show popup and spend points
+                player has unspent points and record is not a match > provide info and disable
+                player has unspent points and record has less points recorded > provide info
+
+                player has no available points and record is not a match > inform not match
+                player has no available points and record is a match > show next talent info
+
+            ]]
+
+
+            if (unspentPoints > 0) then
+                
                 if pointsMatch then
-                    local nextTalent = record.record[spentPoints + 1]
-                    local nextTalentName, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(nextTalent.tabIndex, nextTalent.talentIndex)
-                    panel.autoLearnTalentRecording.active.label:SetText(string.format("%s is active, next talent %s", record.name, nextTalentName))
-                    
-                    StaticPopup_Show("ModernTalentsConfirmTalentRecordTalentSpendDialog", "You have unspent talent points, would you like to apply the selected talent record?", nil, {
+
+                    if (spentPoints < #record.record) then
+                        local nextTalent = record.record[spentPoints + 1]
+                        local nextTalentName, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(nextTalent.tabIndex, nextTalent.talentIndex)
+                        panel.autoLearnTalentRecording.active.label:SetText(string.format("%s is active, next talent %s", record.name, nextTalentName))
+
+                        StaticPopup_Show("ModernTalentsConfirmTalentRecordTalentSpendDialog", "You have unspent talent points, would you like to apply the selected talent record?", nil, {
                         accept = function()
                             self:Specialization_OnSelected(self.classSpecInfo[tabID])
                             self:SetView(2)
@@ -332,15 +355,24 @@ function ModernTalentsMixin:OptionsPanel_OnTalentRecordSettingChanged()
                             self.db.account.profiles[addon.thisCharacter].hasActiveTalentRecording = false
                             panel.autoLearnTalentRecording.active.label:SetText(ADDON_DISABLED)
                         end,
-                    })
+                        })
+                    else
+                        panel.autoLearnTalentRecording.active.label:SetText("All talent record points have been spent!")
+                    end
+                else
+                    panel.autoLearnTalentRecording.active.label:SetText(string.format("Unable to apply talent record %d, point spend doesn't match.", record.name))
                 end
             else
-                if (spentPoints >= #record.record) then
-                    panel.autoLearnTalentRecording.active.label:SetText("All talent record points have been spent!")
+
+                if pointsMatch then
+                    local nextTalent = record.record[spentPoints + 1]
+                    local nextTalentName, iconTexture, row, col, rank, maxRank, isExceptional, available = GetTalentInfo(nextTalent.tabIndex, nextTalent.talentIndex)
+                    panel.autoLearnTalentRecording.active.label:SetText(string.format("%s is active, %s, next talent is %s", record.name, NEXT_TALENT_LEVEL:format(GetNextTalentLevel()), nextTalentName))
                 else
-                    panel.autoLearnTalentRecording.active.label:SetText(string.format("%s is active, %s", record.name, NEXT_TALENT_LEVEL:format(GetNextTalentLevel())))
+                    panel.autoLearnTalentRecording.active.label:SetText(string.format("Unable to apply talent record %s, point spend doesn't match.", record.name))
                 end
             end
+
         else
             panel.autoLearnTalentRecording.active.label:SetText("No talent record active, select from the drop down")
         end
@@ -353,6 +385,8 @@ end
 
 function ModernTalentsMixin:SetupOptionsPanel()
     local panel = self.options;
+
+    panel.autoLearnTalentRecording.active.label:SetSize(350, 40)
 
     panel.cleanStart:SetScript("OnClick", function()
         self:Init(true)
@@ -449,10 +483,9 @@ function ModernTalentsMixin:SetupTalentRecorder()
     panel.record:SetScript("OnClick", function()
         addon.CallbackRegistry:TriggerEvent(addon.Callbacks.Talent_OnTalentRecording, true)
         self.talentRecord = {}
+        self.talentRecordPrimaryTreeIndex = self.talentTreesParent.primaryTree.treeIndex;
         self:UpdateTalentRecordText("Recording...")
-        -- self:IterAllTalentFrames(function(f)
-        --     f:SetNoRank()
-        -- end)
+
         panel.recordingAnim:Play()
         self.talentTreesParent.learnTalents:Disable()
         PlayerTalentFrameLearnButton:Disable()
@@ -466,10 +499,9 @@ function ModernTalentsMixin:SetupTalentRecorder()
     end)
     panel.restart:SetScript("OnClick", function()
         self.talentRecord = {}
+        self.talentRecordPrimaryTreeIndex = self.talentTreesParent.primaryTree.treeIndex;
         self:UpdateTalentRecordText("Record reset")
-        -- self:IterAllTalentFrames(function(f)
-        --     f:SetNoRank()
-        -- end)
+
         self.talentTreesParent.learnTalents:Disable()
         PlayerTalentFrameLearnButton:Disable()
         ModernTalentsFrameLearnButtonTutorialText:SetText(L.RECORD_TALENTS_HELPTIP)
@@ -490,6 +522,7 @@ function ModernTalentsMixin:SetupTalentRecorder()
                     class = class,
                     record = self.talentRecord,
                     isPet = isPet,
+                    primaryTree = self.talentRecordPrimaryTreeIndex or 1;
                 })
                 addon.CallbackRegistry:TriggerEvent(addon.Callbacks.Talent_OnTalentRecording, false)
                 self:IterAllTalentFrames(function(f)
@@ -501,7 +534,10 @@ function ModernTalentsMixin:SetupTalentRecorder()
                 self.talentTreesParent.learnTalents:Enable()
                 PlayerTalentFrameLearnButton:Enable()
                 ModernTalentsFrameLearnButtonTutorialText:SetText(TALENT_TREE_PREVIEW_TUTORIAL)
+                PlayerTalentFrameResetButton_OnClick()
+                self:UpdateSpecializationTab()
                 self:UpdateTalentTrees()
+                self:UpdatePetTalentTree()
             end
         })
     end)
@@ -529,11 +565,14 @@ function ModernTalentsMixin:UpdateTalentRecordText(text)
     self.talentTreesParent.talentRecorderParent.text:SetText(text)
 end
 
-function ModernTalentsMixin:SetTalentInfoText(text)
+function ModernTalentsMixin:SetTalentInfoText(text, fadeDelay)
     self.talentTreesParent.importInfoFadeOut:Stop()
     self.talentTreesParent.importInfo:SetAlpha(1.0)
     self.talentTreesParent.importInfo:SetText(text)
-    self.talentTreesParent.importInfoFadeOut:Play()
+    if type(fadeDelay) == "number" then
+        self.talentTreesParent.importInfoFadeOut.alpha:SetStartDelay(fadeDelay)
+        self.talentTreesParent.importInfoFadeOut:Play()
+    end
 end
 
 function ModernTalentsMixin:OnShow()
@@ -699,6 +738,10 @@ function ModernTalentsMixin:Init(forceReset)
             hasActiveTalentRecording = false,
             currentTalentRecording = {},
         }
+    end
+
+    if GetNextTalentLevel() then
+        self:SetTalentInfoText(RAID_CLASS_COLORS.PRIEST:WrapTextInColorCode(NEXT_TALENT_LEVEL:format(GetNextTalentLevel())))
     end
 
     local _, class = UnitClass("player")
@@ -907,11 +950,13 @@ function ModernTalentsMixin:CheckImportString(dataString)
     if source and class and talents then
         local pointsSpent = self:GetTalentPointsFromDataString(talents)
         local pointString = string.format("%d-%d-%d", pointsSpent[1].points, pointsSpent[2].points, pointsSpent[3].points)
-        self:SetTalentInfoText(string.format("Talent Data from %s for %s [%s]", source, class, pointString))
+        self:SetTalentInfoText(BLUE_FONT_COLOR:WrapTextInColorCode(string.format("Talent Data from %s for %s [%s]", source, class, pointString)), 10)
     end
 end
 
 function ModernTalentsMixin:InitializeTalentTabDropdown()
+
+    local _, classString, classID = UnitClass("player")
 
     local loadoutMenu = {}
     for k, v in ipairs(self.db.account.talentLoadouts) do
@@ -928,8 +973,8 @@ function ModernTalentsMixin:InitializeTalentTabDropdown()
             notCheckable = true,
         }
     }
-    for classID, loadouts in pairs(loadoutMenu) do
-        if classID == select(3, UnitClass("player")) then
+    for _classID, loadouts in pairs(loadoutMenu) do
+        if _classID == classID then
             for k, v in ipairs(loadouts) do
                 table.insert(classLoadoutMenu, {
                     text = v.name,
@@ -942,7 +987,58 @@ function ModernTalentsMixin:InitializeTalentTabDropdown()
         end
     end
 
+    local starterBuilds = addon.Constants.StarterBuilds[classString]
+    local starterMenu = {}
+    if classString == "DRUID" then
+        for k, v in ipairs(starterBuilds) do
+            local id, name;
+            if k == 2 then
+                name = "Cat"
+            elseif k == 3 then
+                name = "Bear"
+            elseif k == 4 then
+                name = "Restoration"
+            else
+                id, name = GetTalentTabInfo(k)
+            end
+            table.insert(starterMenu, {
+                text = name,
+                notCheckable = true,
+                func = function()
+                    local source, class, talents = self:ImportTalentString(v)
+                    self:OnLoadoutSelected({
+                        class = class,
+                        loadout = talents,
+                        forceTabSelection = true,
+                    })
+                end
+            })
+        end
+    else
+        for k, v in ipairs(starterBuilds) do
+            local id, name = GetTalentTabInfo(k)
+            table.insert(starterMenu, {
+                text = name,
+                notCheckable = true,
+                func = function()
+                    local source, class, talents = self:ImportTalentString(v)
+                    self:OnLoadoutSelected({
+                        class = class,
+                        loadout = talents,
+                        forceTabSelection = true,
+                    })
+                end
+            })
+        end
+    end
+
     local menu = {
+        {
+            text = string.format("%s %s", CreateAtlasMarkup("newplayerchat-chaticon-newcomer", 18, 18), L.STARTER_BUILD),
+            notCheckable = true,
+            hasArrow = true,
+            menuList = starterMenu,
+        },
         {
             text = string.format("%s %s", CreateAtlasMarkup("communities-icon-addgroupplus", 18, 18), L.SAVE_TALENTS),
             notCheckable = true,
@@ -1016,7 +1112,7 @@ end
 
 function ModernTalentsMixin:OnLoadoutSelected(data)
     local tabID, loadout = self:ConvertTalentStringToInternalTable(data.loadout)
-    self:AttemptPreviewTalentLoadout(data.class, tabID, loadout)
+    self:AttemptPreviewTalentLoadout(data.class, tabID, loadout, data.isPet or true, data.forceTabSelection)
 end
 
 
@@ -1024,7 +1120,12 @@ end
 ---@param class number checks the talent loadout against the current character class
 ---@param tabID number check the selected spec against the talent loadout spec
 ---@param loadout table a table of talent points that is looped and fed into the Blizz AddPreviewTalentPoints api
-function ModernTalentsMixin:AttemptPreviewTalentLoadout(class, tabID, loadout)
+function ModernTalentsMixin:AttemptPreviewTalentLoadout(class, tabID, loadout, isPet, forceTabSelect)
+
+    if forceTabSelect then
+        self:SetView(2)
+        self:Specialization_OnSelected(self.classSpecInfo[tabID])
+    end
 
     if loadout and (class == select(3, UnitClass("player"))) and self.selectedSpecInfo and (self.selectedSpecInfo.tabID == tabID) then
 
@@ -1035,9 +1136,105 @@ function ModernTalentsMixin:AttemptPreviewTalentLoadout(class, tabID, loadout)
 
         local activeTalentGroup = GetActiveTalentGroup(false, false)
 
+
+        --[[
+            this needs to be implemented properly so any loadout gets applied correctly
+        ]]
+        -- local loadoutOrdered = {}
+        -- for k, v in ipairs(loadout) do
+        --     local tier, column, isLearnable = GetTalentPrereqs(v.tabIndex, v.talentIndex, false, isPet, activeTalentGroup)
+
+        --     if tier and column then
+        --         local talent = self:FindTalentFromAddress(tabID, tier, column)
+        --         local _name, _, row, col, _rank, _maxRank, isExceptional, available, unKnown, isActive, y, talentID = GetTalentInfo(talent.tabIndex, talent.talentIndex)
+                
+        --         for i = 1, _maxRank do
+        --             table.insert(loadoutOrdered, {
+        --                 tabIndex = talent.tabIndex,
+        --                 talentIndex = talent.talentIndex,
+        --             })
+        --         end
+
+        --     else
+        --         table.insert(loadoutOrdered, v)
+
+        --     end
+        -- end
+
+        --local loadoutOrdered;
+        if class == 6 then
+            local firstNecroPointIndex;
+            local runeTapIndex;
+            for k, v in ipairs(loadout) do
+                if v.tabIndex == 1 and v.talentIndex == 6 then
+                    if not firstNecroPointIndex then
+                        firstNecroPointIndex = k
+                    end
+                end
+                if v.tabIndex == 1 and v.talentIndex == 4 then
+                    if not runeTapIndex then
+                        runeTapIndex = k
+                    end
+                end
+            end
+            if type(firstNecroPointIndex) == "number" and type(runeTapIndex) == "number" then
+
+                --print("moving talents to allow for pre req ordering")
+
+                --as the loadout elements are { tabIndex = n, talentIndex = n, } we can just move the rune tap entry into the first necro entry
+                Util.tableSwap(loadout, firstNecroPointIndex, runeTapIndex)
+            end
+
+        elseif class == 8 then
+
+            --arcane leftwards pre req
+            local firstArcaneFlowsPointIndex;
+            local presenceMindIndex;
+            for k, v in ipairs(loadout) do
+                if v.tabIndex == 1 and v.talentIndex == 11 then
+                    if not firstArcaneFlowsPointIndex then
+                        firstArcaneFlowsPointIndex = k
+                    end
+                end
+                if v.tabIndex == 1 and v.talentIndex == 6 then
+                    if not presenceMindIndex then
+                        presenceMindIndex = k
+                    end
+                end
+            end
+            if type(firstArcaneFlowsPointIndex) == "number" and type(presenceMindIndex) == "number" then
+                Util.tableSwap(loadout, firstArcaneFlowsPointIndex, presenceMindIndex)
+            end
+
+
+            --frost leftwards pre req
+            local firstShatBarrierPointIndex;
+            local iceBarrierIndex;
+            for k, v in ipairs(loadout) do
+                if v.tabIndex == 3 and v.talentIndex == 8 then
+                    if not firstShatBarrierPointIndex then
+                        firstShatBarrierPointIndex = k
+                    end
+                end
+                if v.tabIndex == 3 and v.talentIndex == 9 then
+                    if not iceBarrierIndex then
+                        iceBarrierIndex = k
+                    end
+                end
+            end
+            if type(firstShatBarrierPointIndex) == "number" and type(iceBarrierIndex) == "number" then
+                Util.tableSwap(loadout, firstShatBarrierPointIndex, iceBarrierIndex)
+            end
+
+
+        end
+
+
         local i = 1;
-        C_Timer.NewTicker(0.01, function()
+        C_Timer.NewTicker(0.015, function()
             local talent = loadout[i]
+            --local _name, _, row, col, _rank, _maxRank, isExceptional, available, unKnown, isActive, y, talentID = GetTalentInfo(talent.tabIndex, talent.talentIndex)
+            --print(i, _name)
             AddPreviewTalentPoints(talent.tabIndex, talent.talentIndex, 1, false, activeTalentGroup);
             i = i + 1;
         end, #loadout)
@@ -1045,7 +1242,7 @@ function ModernTalentsMixin:AttemptPreviewTalentLoadout(class, tabID, loadout)
     else
 
         --add more fail reasons in time
-        self:SetTalentInfoText(string.format("That loadout isn't compatible"))
+        self:SetTalentInfoText(RED_FONT_COLOR:WrapTextInColorCode(string.format("That loadout isn't compatible"), 6))
     end
     
 end
@@ -1093,7 +1290,11 @@ function ModernTalentsMixin:ImportTalentString(dataString)
     if string.find(dataString, "www.wowhead.com", nil, true) then
         source = "wowhead";
         local _, _, _, expansion, _, _class, _talents = strsplit("/", dataString)
-        --print(expansion, class, talents)
+        
+        if _class == "death-knight" then
+            _class = "deathknight"
+        end
+
         class = _class:upper()
         talents = _talents
     end
@@ -1106,19 +1307,11 @@ function ModernTalentsMixin:ImportTalentString(dataString)
     end
 
     if source and (type(class) == "number") and talents then
-        StaticPopup_Show("ModernTalentsSaveLoadoutDialog", "Name", nil, {
-            callback = function(name)
-                table.insert(self.db.account.talentLoadouts, {
-                    name = name,
-                    class = class,
-                    loadout = talents,
-                })
-                self:InitializeTalentTabDropdown()
-            end
-        })
+        return source, class, talents;
     end
 
 end
+
 
 
 ---Parse a talent data string and return tab point spend data
@@ -1143,7 +1336,9 @@ function ModernTalentsMixin:GetTalentPointsFromDataString(dataString)
             local tbl = {string.byte(tab, 1, #tab)}
             for i = 1, #tbl do
                 local c = tonumber(string.char(tbl[i]))
-                pointsSpent[k].points = pointsSpent[k].points + c
+                if c then
+                    pointsSpent[k].points = pointsSpent[k].points + c
+                end
             end
         end
     end
@@ -1192,7 +1387,8 @@ function ModernTalentsMixin:ConvertTalentStringToInternalTable(dataString)
                     if talentString then
                         for k, talent in ipairs(self.talentTreesParent[v]:GetFrames()) do
                             if talent.talentIndex then
-                                --local rank = tonumber(string.char(tbl[j]))
+
+                                local _name, _, row, col, _rank, _maxRank, isExceptional, available, unKnown, isActive, y, talentID = GetTalentInfo(tab.id, talent.talentIndex)
                                 local rank = tonumber(string.sub(talentString, j,j))
                                 if rank and rank > 0 then
                                     for x = 1, rank do
@@ -1200,9 +1396,17 @@ function ModernTalentsMixin:ConvertTalentStringToInternalTable(dataString)
                                             tabIndex = tab.id,
                                             talentIndex = talent.talentIndex,
                                         })
-                                        --print(tab.id, talent.rowId, talent.colId, rank)
+
+                                        -- if tab.id == 1 then
+                                        --     print(j, _name, rank)
+                                        --     print(tab.id, talent.rowId, talent.colId, rank, j)
+
+                                        -- end
+
+
                                     end
                                 end
+
                                 j = j + 1;
                             end
                         end
@@ -1210,8 +1414,6 @@ function ModernTalentsMixin:ConvertTalentStringToInternalTable(dataString)
                 end
             end
         end
-
-        --DevTools_Dump(queue)
 
         return pointsSpent[1].id, queue
 

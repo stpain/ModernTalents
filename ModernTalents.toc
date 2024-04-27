@@ -1,6 +1,6 @@
-## Interface: 30403
+## Interface: 40400
 ## Author: TheBoringDad
-## Version: 0.3
+## Version: 0.4
 ## Title: Modern Talents
 ## Notes: An addon for guilds
 ## SavedVariables: MT_ACCOUNT

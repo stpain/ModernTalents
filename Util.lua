@@ -45,6 +45,18 @@ local specThumbnails = {
 
 local Util = {}
 
+function Util.tableSwap(tbl, i, j)
+    tbl[i], tbl[j] = tbl[j], tbl[i]
+end
+
+function Util.tableMoveUp(tbl, i)
+    Util.tableSwap(tbl, i, i - 1)
+end
+
+function Util.tableMoveDown(tbl, i)
+    Util.tableSwap(tbl, i, i + 1)
+end
+
 function Util.GetAvailableTalentPointsForLevel(level)
     return ((level -10) / 2) +1;
 end

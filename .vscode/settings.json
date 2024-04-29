@@ -67,6 +67,12 @@
         "LEVEL",
         "Add",
         "RED_FONT_COLOR",
-        "BLUE_FONT_COLOR"
+        "BLUE_FONT_COLOR",
+        "DEFAULT_CHAT_FRAME",
+        "SlashCmdList",
+        "GameTooltip_AddColoredLine",
+        "EmbeddedItemTooltip",
+        "message",
+        "NORMAL_FONT_COLOR"
     ]
 }

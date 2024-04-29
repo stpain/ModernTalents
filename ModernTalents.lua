@@ -719,6 +719,7 @@ function ModernTalentsMixin:Init(forceReset)
             talentLoadouts = {},
             talentRecordings = {},
             profiles = {},
+            minimapButton = {},
         }
     end
 
@@ -880,8 +881,41 @@ function ModernTalentsMixin:Init(forceReset)
     end
 
     self:SetupOptionsPanel()
-
+    self:CreateMinimapButton()
     --self:CreateClassData()
+
+end
+
+
+function ModernTalentsMixin:CreateMinimapButton()
+    
+    local ldb = LibStub("LibDataBroker-1.1")
+
+    if not self.minimapButton then
+        self.minimapButtonDataObject = ldb:NewDataObject('ModernTalentsMinimapButton', {
+            type = "launcher",
+            icon = 132222,
+            OnClick = function(_, button)
+                self:SetShown(not self:IsVisible())
+            end,
+
+        })
+        self.minimapButton = LibStub("LibDBIcon-1.0")
+        self.minimapButton:Register('ModernTalentsMinimapButton', self.minimapButtonDataObject, self.db.account.minimapButton)
+    end
+
+    -- _G['LibDBIcon10_ModernTalentsMinimapButton'].UpdateTooltip = function()
+        
+    -- end
+
+    _G['LibDBIcon10_ModernTalentsMinimapButton']:SetScript("OnEnter", function(s)
+        GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
+        GameTooltip_AddColoredLine(GameTooltip, "Modern Talents", BLUE_FONT_COLOR);
+        GameTooltip:Show()
+    end)
+    _G['LibDBIcon10_ModernTalentsMinimapButton']:SetScript("OnLeave", function(s)
+        GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+    end)
 
 end
 
